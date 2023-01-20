@@ -4,7 +4,7 @@
 ///////////////////////////////////////////////////////////////////////////////
 // more comments
 //`include "module_full_adder.v"
-
+`timescale 1ns/1ps
 module carry_lookahead_adder
   #(parameter WIDTH)
    (

@@ -1,34 +1,35 @@
-To send a command to Aurora Verification Cloud, use 
-> aurora execute '<your command>'
+To send a command to DSim Cloud, use
+> mdc <DSim command> -a '[options]'
+See this article for details:
+https://support.metrics.ca/hc/en-us/articles/10166809979789-User-Guide-DSim-Cloud-CLI-Tool-simulator-commands
+
+Design is using LPM library from Intel.
+Need to set up the precompiled libraries first:
+https://support.metrics.ca/hc/en-us/articles/9645897670669-How-To-Set-up-Intel-Quartus-Precompiled-Libraries-in-DSim-Cloud
 
 DSim supports different ways to compile and run a simulation.
-Depending on your previous experience and preference, you can choose one of the following steps to achieve the same purpose.
-Please refer to DSim User Guide for more information
-
-Setup Quartus Precompiled Library, for example:
-> aurora execute 'dsim_precompiled_library_setup --package quartus --ieee 1993'
-Generally,
-#dsim_precompiled_library_setup [-h] [-p {none,quartus,vivado}]
-#                               [--work WORK_DIR] [--ieee {1993,2008}]
-#                               [--dryrun]
-
+Please refer to the DSim User Manual for more information:
+https://support.metrics.ca/hc/en-us/articles/360061975232-User-Guide-DSim-User-Manual
 
 Compile and Run Simulation
-Since this is a mixed language environment, VHDL Design + Verilog Testbench, we must analyze separately, elaborate and run can be together or separate.
-1. Analyze separately. Compile and Run in 1-step. 
-> aurora execute 'dsim -genimage myimage -F filelist.txt +acc+b'
-> aurora execute 'dsim -image myimage -waves waves.vcd'
+Since this is a mixed language environment, VHDL Design + Verilog Testbench, we must Analyze separately, while Elaborate and Run can be together or separate.
+Depending on your previous experience and preference, you can choose one of the following methods to achieve the same purpose.
 
-2. Analyze separately, Elaborate and Run in 2-steps. These are perfect for "compile-once, run-many" simulations with different random seed flows.
-> aurora execute 'dvlcom -F filelist.txt'
-> aurora execute 'dsim -genimage myimage -top work.carry_lookahead_adder_tb +acc+b'
-> aurora execute 'dsim -image myimage -waves waves.vcd'
+1. 2-step Method: Analyze separately, Elaborate and Run in one step.
+> mdc dvhcom -a '-F filelist_VHDL.txt'
+> mdc dvlcom -a '-F filelist_SV.txt'
+> mdc dsim -a '-top work.carry_lookahead_adder_tb +acc+b -waves waves.vcd'
 
+2. 3-step Method: Analyze separately, Elaborate and Run in two steps. These are perfect for "compile-once, run-many" simulations with different random seed flows.
+> mdc dvhcom -a '-F filelist_VHDL.txt'
+> mdc dvlcom -a '-F filelist_SV.txt'
+> mdc dsim -a '-genimage myimage -top work.carry_lookahead_adder_tb +acc+b'
+> mdc dsim -a '-image myimage -waves waves.vcd'
 
 Conclusion:
-1. To send a command to Aurora Verification Cloud, use:
-> aurora execute '<your command>'
+1. To send a command to DSim Cloud, use:
+> mdc <DSim command> -a '[options]'
 
-2. There are different ways to compile and run a simulation using DSim. Please refer to the User Guide 
+2. There are different ways to compile and run a simulation using DSim. Please refer to the User Manual.
 
-3. In Verilog/SystemVerilog, you need to specify the required library through -L <lib> switch.
+3. In Verilog/SystemVerilog, you need to specify the required library through the '-L <lib>' switch.
